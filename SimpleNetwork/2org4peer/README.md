@@ -20,28 +20,28 @@ peer에 명령어를 날리기 위해 cli container 안으로 이동
 
 
 ### 4. 채널 생성 및 조인
-..../peer/# sh scripts/createChannelAndJoin.sh
+$ sh scripts/createChannelAndJoin.sh
 
 cli 안에 기 작성되어 있는 채널 생성 및 조인 스크립트 실행
 
 
 ### 5. 체인코드 install 및 instantiate
-..../peer/# sh scripts/installAndInstantiateChaincode.sh
+$ sh scripts/installAndInstantiateChaincode.sh
 
 cli 안에 기 작성되어 체인코드 install, instantiate 스크립트 실행
 
 
 ### 6. invoke 
 #### createAuctioner invoke
-..../peer/# peer chaincode invoke -o orderer1.auction.com:7050 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/auction.com/orderers/orderer1.auction.com/msp/tlscacerts/tlsca.auction.com-cert.pem -C $CHANNEL_NAME -n participants --peerAddresses peer0.org1.auction.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.auction.com/peers/peer0.org1.auction.com/tls/ca.crt --peerAddresses peer0.org2.auction.com:9051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.auction.com/peers/peer0.org2.auction.com/tls/ca.crt -c '{"Args":["createAuctioner","ID01","James","0"]}'
+$ peer chaincode invoke -o orderer1.auction.com:7050 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/auction.com/orderers/orderer1.auction.com/msp/tlscacerts/tlsca.auction.com-cert.pem -C $CHANNEL_NAME -n participants --peerAddresses peer0.org1.auction.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.auction.com/peers/peer0.org1.auction.com/tls/ca.crt --peerAddresses peer0.org2.auction.com:9051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.auction.com/peers/peer0.org2.auction.com/tls/ca.crt -c '{"Args":["createAuctioner","ID01","James","0"]}'
 
 #### createBidder invoke
-..../peer/# peer chaincode invoke -o orderer1.auction.com:7050 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/auction.com/orderers/orderer1.auction.com/msp/tlscacerts/tlsca.auction.com-cert.pem -C $CHANNEL_NAME -n participants --peerAddresses peer0.org1.auction.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.auction.com/peers/peer0.org1.auction.com/tls/ca.crt --peerAddresses peer0.org2.auction.com:9051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.auction.com/peers/peer0.org2.auction.com/tls/ca.crt -c '{"Args":["createBidder","ID02","Tom","0"]}'
+$ peer chaincode invoke -o orderer1.auction.com:7050 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/auction.com/orderers/orderer1.auction.com/msp/tlscacerts/tlsca.auction.com-cert.pem -C $CHANNEL_NAME -n participants --peerAddresses peer0.org1.auction.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.auction.com/peers/peer0.org1.auction.com/tls/ca.crt --peerAddresses peer0.org2.auction.com:9051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.auction.com/peers/peer0.org2.auction.com/tls/ca.crt -c '{"Args":["createBidder","ID02","Tom","0"]}'
 
 ### 7. query
 #### getAuctioner query
-..../peer/# peer chaincode query -C $CHANNEL_NAME -n participants -c '{"Args":["getAuctioner","ID01"]}'
+$ peer chaincode query -C $CHANNEL_NAME -n participants -c '{"Args":["getAuctioner","ID01"]}'
 
 #### getBidder query
-..../peer/# peer chaincode query -C $CHANNEL_NAME -n participants -c '{"Args":["getBidder","ID02"]}'
+$ peer chaincode query -C $CHANNEL_NAME -n participants -c '{"Args":["getBidder","ID02"]}'
 
