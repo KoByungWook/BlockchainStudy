@@ -1,0 +1,269 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+volumes:
+  orderer1.auction.com:
+  orderer2.auction.com:
+  orderer3.auction.com:
+  peer0.org1.auction.com:
+  peer1.org1.auction.com:
+  peer0.org2.auction.com:
+  peer1.org2.auction.com:
+
+networks:
+  byfn:
+
+services:
+
+  orderer1.auction.com:
+    extends:
+      file:   base/peer-base.yaml
+      service: orderer-base
+    container_name: orderer1.auction.com
+    volumes:
+      - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+      - ./crypto-config/ordererOrganizations/auction.com/orderers/orderer1.auction.com/msp:/var/hyperledger/orderer/msp
+      - ./crypto-config/ordererOrganizations/auction.com/orderers/orderer1.auction.com/tls/:/var/hyperledger/orderer/tls
+      - orderer1.auction.com:/var/hyperledger/production/orderer
+    ports:
+      - 7050:7050
+    networks:
+      - byfn
+
+  orderer2.auction.com:
+    extends:
+      file:   base/peer-base.yaml
+      service: orderer-base
+    container_name: orderer2.auction.com
+    volumes:
+      - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+      - ./crypto-config/ordererOrganizations/auction.com/orderers/orderer2.auction.com/msp:/var/hyperledger/orderer/msp
+      - ./crypto-config/ordererOrganizations/auction.com/orderers/orderer2.auction.com/tls/:/var/hyperledger/orderer/tls
+      - orderer2.auction.com:/var/hyperledger/production/orderer
+    ports:
+      - 8050:7050
+    networks:
+      - byfn
+
+  orderer3.auction.com:
+    extends:
+      file:   base/peer-base.yaml
+      service: orderer-base
+    container_name: orderer3.auction.com
+    volumes:
+      - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+      - ./crypto-config/ordererOrganizations/auction.com/orderers/orderer3.auction.com/msp:/var/hyperledger/orderer/msp
+      - ./crypto-config/ordererOrganizations/auction.com/orderers/orderer3.auction.com/tls/:/var/hyperledger/orderer/tls
+      - orderer3.auction.com:/var/hyperledger/production/orderer
+    ports:
+      - 9050:7050
+    networks:
+      - byfn
+
+  peer0.org1.auction.com:
+    container_name: peer0.org1.auction.com
+    extends:
+      file:  base/peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org1.auction.com
+      - CORE_PEER_ADDRESS=peer0.org1.auction.com:7051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.org1.auction.com:7052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org1.auction.com:8051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.auction.com:7051
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.peer0.org1.auction.com:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+    volumes:
+      - /var/run/:/host/var/run/
+      - peer0.org1.auction.com:/var/hyperledger/production
+      - ./crypto-config/peerOrganizations/org1.auction.com/peers/peer0.org1.auction.com/msp:/etc/hyperledger/fabric/msp
+      - ./crypto-config/peerOrganizations/org1.auction.com/peers/peer0.org1.auction.com/tls:/etc/hyperledger/fabric/tls    
+    ports:
+      - 7051:7051
+    depends_on:
+      - couchdb.peer0.org1.auction.com
+    networks:
+      - byfn
+
+  couchdb.peer0.org1.auction.com:
+    container_name: couchdb.peer0.org1.auction.com
+    image: hyperledger/fabric-couchdb:0.4.18
+    environment:
+      - COUCHDB_USER= 
+      - COUCHDB_PASSWORD= 
+    ports:
+      - 5984:5984
+    networks:
+      - byfn
+
+  peer1.org1.auction.com:
+    container_name: peer1.org1.auction.com
+    extends:
+      file:  base/peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.org1.auction.com
+      - CORE_PEER_ADDRESS=peer1.org1.auction.com:8051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:8051
+      - CORE_PEER_CHAINCODEADDRESS=peer1.org1.auction.com:8052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:8052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org1.auction.com:8051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org1.auction.com:8051
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.peer1.org1.auction.com:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+    volumes:
+      - /var/run/:/host/var/run/
+      - peer1.org1.auction.com:/var/hyperledger/production
+      - ./crypto-config/peerOrganizations/org1.auction.com/peers/peer1.org1.auction.com/msp:/etc/hyperledger/fabric/msp
+      - ./crypto-config/peerOrganizations/org1.auction.com/peers/peer1.org1.auction.com/tls:/etc/hyperledger/fabric/tls    
+    ports:
+      - 8051:8051
+    depends_on:
+      - couchdb.peer1.org1.auction.com
+    networks:
+      - byfn
+
+  couchdb.peer1.org1.auction.com:
+    container_name: couchdb.peer1.org1.auction.com
+    image: hyperledger/fabric-couchdb:0.4.18
+    environment:
+      - COUCHDB_USER= 
+      - COUCHDB_PASSWORD= 
+    ports:
+      - 6984:5984
+    networks:
+      - byfn
+
+  peer0.org2.auction.com:
+    container_name: peer0.org2.auction.com
+    extends:
+      file:  base/peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org2.auction.com
+      - CORE_PEER_ADDRESS=peer0.org2.auction.com:9051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:9051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.org2.auction.com:9052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:9052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org2.auction.com:8051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org2.auction.com:9051
+      - CORE_PEER_LOCALMSPID=Org2MSP
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.peer1.org1.auction.com:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+    volumes:
+      - /var/run/:/host/var/run/
+      - peer0.org2.auction.com:/var/hyperledger/production
+      - ./crypto-config/peerOrganizations/org2.auction.com/peers/peer0.org2.auction.com/msp:/etc/hyperledger/fabric/msp
+      - ./crypto-config/peerOrganizations/org2.auction.com/peers/peer0.org2.auction.com/tls:/etc/hyperledger/fabric/tls    
+    ports:
+      - 9051:9051
+    depends_on:
+      - couchdb.peer0.org2.auction.com
+    networks:
+      - byfn
+
+  couchdb.peer0.org2.auction.com:
+    container_name: couchdb.peer0.org2.auction.com
+    image: hyperledger/fabric-couchdb:0.4.18
+    environment:
+      - COUCHDB_USER= 
+      - COUCHDB_PASSWORD= 
+    ports:
+      - 7984:5984
+    networks:
+      - byfn
+
+  peer1.org2.auction.com:
+    container_name: peer1.org2.auction.com
+    extends:
+      file:  base/peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.org2.auction.com
+      - CORE_PEER_ADDRESS=peer1.org2.auction.com:10051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:10051
+      - CORE_PEER_CHAINCODEADDRESS=peer1.org2.auction.com:10052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:10052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org2.auction.com:10051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org2.auction.com:10051
+      - CORE_PEER_LOCALMSPID=Org2MSP
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.peer1.org2.auction.com:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+    volumes:
+      - /var/run/:/host/var/run/
+      - peer1.org2.auction.com:/var/hyperledger/production
+      - ./crypto-config/peerOrganizations/org2.auction.com/peers/peer1.org2.auction.com/msp:/etc/hyperledger/fabric/msp
+      - ./crypto-config/peerOrganizations/org2.auction.com/peers/peer1.org2.auction.com/tls:/etc/hyperledger/fabric/tls    
+    ports:
+      - 10051:10051
+    depends_on:
+      - couchdb.peer1.org2.auction.com
+    networks:
+      - byfn
+
+  couchdb.peer1.org2.auction.com:
+    container_name: couchdb.peer1.org2.auction.com
+    image: hyperledger/fabric-couchdb:0.4.18
+    environment:
+      - COUCHDB_USER= 
+      - COUCHDB_PASSWORD= 
+    ports:
+      - 8984:5984
+    networks:
+      - byfn
+
+  cli:
+    container_name: cli
+    image: hyperledger/fabric-tools:1.4.4
+    tty: true
+    stdin_open: true
+    environment:
+      - SYS_CHANNEL=byfn-sys-channel
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      #- FABRIC_LOGGING_SPEC=DEBUG
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_ID=cli
+      - CORE_PEER_ADDRESS=peer0.org1.auction.com:7051
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.auction.com/peers/peer0.org1.auction.com/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.auction.com/peers/peer0.org1.auction.com/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.auction.com/peers/peer0.org1.auction.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.auction.com/users/Admin@org1.auction.com/msp
+      - CHANNEL_NAME=testchannel
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/
+        #- ./../chaincode/:/opt/gopath/src/github.com/chaincode
+        - ./../chaincode_ws/src/auction.com:/opt/gopath/src/github.com/chaincode
+        - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+        - ./scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+        - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+    depends_on:
+      - orderer1.auction.com
+      - orderer2.auction.com
+      - orderer3.auction.com
+      - peer0.org1.auction.com
+      - peer1.org1.auction.com
+      - peer0.org2.auction.com
+      - peer1.org2.auction.com
+    networks:
+      - byfn
