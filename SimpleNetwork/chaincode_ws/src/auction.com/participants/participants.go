@@ -40,6 +40,10 @@ func (t *ParticipantsChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Resp
 		return t.creaetAuctioner(stub, args)
 	} else if function == "createBidder" {
 		return t.createBidder(stub, args)
+	} else if function == "getAuctioner" {
+		return t.getAuctioner(stub, args)
+	} else if function == "getBidder" {
+		return t.getBidder(stub, args)
 	}
 
 	return shim.Error("Invalid invoke function name.")
