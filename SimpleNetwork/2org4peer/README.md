@@ -16,12 +16,12 @@ $ docker exec -it cli bash
 peer에 명령어를 날리기 위해 cli container 안으로 이동
 
 ## 4. 채널 생성 및 조인
-# sh scripts/createChannelAndJoin.sh
+..../peer/# sh scripts/createChannelAndJoin.sh
 
 cli 안에 기 작성되어 있는 채널 생성 및 조인 스크립트 실행
 
 ## 5. 체인코드 install 및 instantiate
-# sh scripts/installAndInstantiateChaincode.sh
+..../peer/# sh scripts/installAndInstantiateChaincode.sh
 
 cli 안에 기 작성되어 체인코드 install, instantiate 스크립트 실행
 
